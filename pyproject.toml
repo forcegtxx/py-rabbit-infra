@@ -1,0 +1,14 @@
+[project]
+name = "rabbitmq-kit"
+version = "0.1.0"
+description = "Kit of rabbitmq"
+requires-python = ">=3.10"
+readme = "README.md"
+authors = [{name = "forcegtxx"}]
+license = {text = "MIT"}
+
+dependencies = []
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
