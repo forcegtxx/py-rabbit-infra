@@ -5,7 +5,7 @@ from aio_pika import connect_robust, Message, DeliveryMode, ExchangeType
 from aio_pika.abc import AbstractQueue, AbstractExchange, AbstractRobustConnection, AbstractChannel
 from typing import Dict, Any, Optional
 
-from exceptions.errors import ConnectionError
+from exceptions import ConnectionError
 from ports.rabbit_client_port import RabbitClientPort
 
 

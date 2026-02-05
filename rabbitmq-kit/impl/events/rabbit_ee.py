@@ -5,7 +5,7 @@ from logging import Logger, getLogger
 from aio_pika.abc import AbstractExchange, AbstractIncomingMessage
 from typing import Optional, Callable, Dict, Any, Awaitable
 
-from exceptions.errors import ConsumeError
+from exceptions import ConsumeError
 from ports.rabbit_client_port import RabbitClientPort
 from ports.rabbit_ee_port import RabbitEEPort
 

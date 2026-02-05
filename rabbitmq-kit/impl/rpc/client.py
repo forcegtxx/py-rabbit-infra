@@ -6,7 +6,7 @@ from aio_pika.abc import AbstractExchange, AbstractIncomingMessage, AbstractQueu
 from asyncio import Future
 from typing import Optional, Dict, Any
 
-from exceptions.errors import RpcTimeoutError
+from exceptions import RpcTimeoutError
 from ports.rpc.client_port import RabbitRpcClientPort
 from ports.rabbit_client_port import RabbitClientPort
 
