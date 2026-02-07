@@ -32,7 +32,7 @@ class RabbitRpcClient(BrokerRpcClientPort):
         self._topic_exchange = self._broker.topic_exchange
 
         self.callback_queue = await self._broker.create_temporary_queue()
-        # Подписываемся на ответы
+        # Subscribe to the callback queue to receive responses
         await self.callback_queue.consume(self._on_response)
 
     async def stop(self):
