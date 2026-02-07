@@ -1,7 +1,7 @@
 import pytest
 from typing import Dict, Any
-from rabbitmq_infra import RabbitRpcServer, RabbitRpcClient
-from rabbitmq_infra.ports.broker_client_port import BrokerClientPort
+from rabbit_infra import RabbitRpcServer, RabbitRpcClient
+from rabbit_infra.ports.broker_client_port import BrokerClientPort
 
 @pytest.mark.asyncio
 async def test_rpc_call(broker_client: BrokerClientPort):

@@ -1,7 +1,7 @@
 import pytest
 from typing import List
 from aio_pika.abc import AbstractQueue, AbstractIncomingMessage
-from rabbitmq_infra.ports.broker_client_port import BrokerClientPort
+from rabbit_infra.ports.broker_client_port import BrokerClientPort
 
 @pytest.mark.asyncio
 async def test_create_direct_queue(broker_client: BrokerClientPort):

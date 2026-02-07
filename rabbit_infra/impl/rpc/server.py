@@ -5,10 +5,10 @@ from logging import Logger, getLogger
 from typing import TYPE_CHECKING, Optional, Dict
 if TYPE_CHECKING:
     from aio_pika.abc import AbstractExchange, AbstractIncomingMessage
-    from rabbitmq_infra.ports.broker_client_port import BrokerClientPort
-    from rabbitmq_infra.types import RpcHandler
+    from rabbit_infra.ports.broker_client_port import BrokerClientPort
+    from rabbit_infra.types import RpcHandler
 
-from rabbitmq_infra.ports.rpc.server_port import BrokerRpcServerPort
+from rabbit_infra.ports.rpc.server_port import BrokerRpcServerPort
 
 
 class RabbitRpcServer(BrokerRpcServerPort):

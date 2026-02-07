@@ -7,11 +7,11 @@ from logging import Logger, getLogger
 from typing import TYPE_CHECKING, Optional, Any
 if TYPE_CHECKING:
     from aio_pika.abc import AbstractExchange, AbstractIncomingMessage
-    from rabbitmq_infra.types import EventHandler
+    from rabbit_infra.types import EventHandler
     from ports.broker_client_port import BrokerClientPort
 
-from rabbitmq_infra.exceptions import ConsumeError
-from rabbitmq_infra.ports.broker_ee_port import BrokerEEPort
+from rabbit_infra.exceptions import ConsumeError
+from rabbit_infra.ports.broker_ee_port import BrokerEEPort
 
 
 class RabbitEE(BrokerEEPort):

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Protocol
 if TYPE_CHECKING:
     from asyncio import Task
-    from rabbitmq_infra.types import EventHandler, Payload
+    from rabbit_infra.types import EventHandler, Payload
 
 
 class BrokerEEPort(Protocol):

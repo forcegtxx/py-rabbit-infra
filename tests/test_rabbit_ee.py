@@ -1,8 +1,8 @@
 import pytest
 import asyncio
 from typing import Dict, Any, List
-from rabbitmq_infra.ports.broker_client_port import BrokerClientPort
-from rabbitmq_infra import RabbitEE
+from rabbit_infra.ports.broker_client_port import BrokerClientPort
+from rabbit_infra import RabbitEE
 
 @pytest.mark.asyncio
 async def test_emit_and_on(broker_client: BrokerClientPort):

@@ -1,6 +1,6 @@
 import os
 import pytest_asyncio
-from rabbitmq_infra import RabbitClient
+from rabbit_infra import RabbitClient
 from dotenv import load_dotenv
 
 load_dotenv()

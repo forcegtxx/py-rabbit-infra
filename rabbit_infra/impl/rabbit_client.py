@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING, Optional, Dict, Any
 if TYPE_CHECKING:
     from aio_pika.abc import AbstractQueue, AbstractExchange, AbstractRobustConnection, AbstractChannel
 
-from rabbitmq_infra.ports.broker_client_port import BrokerClientPort
-from rabbitmq_infra.exceptions import ConnectionError
+from rabbit_infra.ports.broker_client_port import BrokerClientPort
+from rabbit_infra.exceptions import ConnectionError
 
 
 class RabbitClient(BrokerClientPort):

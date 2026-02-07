@@ -2,21 +2,22 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol
 if TYPE_CHECKING:
-    from rabbitmq_infra.types import RpcHandler
+    from rabbit_infra.types import Payload
 
 
-class BrokerRpcServerPort(Protocol):
+class BrokerRpcClientPort(Protocol):
     async def start(self) -> None:
         ...
 
     async def stop(self) -> None:
         ...
 
-    async def register(
+    async def call(
         self,
         *,
         service_name: str,
         method: str,
-        handler: RpcHandler
-    ) -> None:
+        payload: Payload,
+        timeout: int = 5
+    ) -> Payload:
         ...
