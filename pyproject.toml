@@ -7,7 +7,9 @@ readme = "README.md"
 authors = [{name = "forcegtxx"}]
 license = {text = "MIT"}
 
-dependencies = []
+dependencies = [
+    "aio-pika==9.5.7"
+]
 
 [build-system]
 requires = ["setuptools"]
