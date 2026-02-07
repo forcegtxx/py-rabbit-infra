@@ -15,7 +15,7 @@ __all__ = [
     "RabbitEE",
 
     "BrokerClientPort",
-    "BrokerEEPort",
     "BrokerRpcClientPort",
-    "BrokerRpcServerPort"
+    "BrokerRpcServerPort",
+    "BrokerEEPort"
 ]
