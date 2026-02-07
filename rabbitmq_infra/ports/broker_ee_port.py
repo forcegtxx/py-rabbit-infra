@@ -1,10 +1,12 @@
-from asyncio import Task
-from typing import Any, Callable, Awaitable, Protocol
+from __future__ import annotations
 
-Handler = Callable[[Any], Awaitable[None]]
+from typing import TYPE_CHECKING, Protocol
+if TYPE_CHECKING:
+    from asyncio import Task
+    from rabbitmq_infra.types import EventHandler, Payload
 
 
-class RabbitEEPort(Protocol):
+class BrokerEEPort(Protocol):
     async def start(self) -> None:
         ...
 
@@ -14,14 +16,14 @@ class RabbitEEPort(Protocol):
     def on(
         self, 
         event_pattern: str, 
-        handler: Handler
+        handler: EventHandler
     ) -> Task[None]:
         ...
     
     def emit(
         self, 
         event_name: str,
-        payload: Any, 
+        payload: Payload, 
         durable: bool = False
     ) -> Task[None]:
         ...

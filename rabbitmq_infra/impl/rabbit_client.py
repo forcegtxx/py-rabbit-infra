@@ -1,18 +1,21 @@
+from __future__ import annotations
+
 import time
 import json
 from logging import Logger, getLogger
 from aio_pika import connect_robust, Message, DeliveryMode, ExchangeType
-from aio_pika.abc import AbstractQueue, AbstractExchange, AbstractRobustConnection, AbstractChannel
-from typing import Dict, Any, Optional
+from typing import TYPE_CHECKING, Optional, Dict, Any
+if TYPE_CHECKING:
+    from aio_pika.abc import AbstractQueue, AbstractExchange, AbstractRobustConnection, AbstractChannel
 
-from exceptions import ConnectionError
-from ports.rabbit_client_port import RabbitClientPort
+from rabbitmq_infra.ports.broker_client_port import BrokerClientPort
+from rabbitmq_infra.exceptions import ConnectionError
 
 
-class RabbitClient(RabbitClientPort):
+class RabbitClient(BrokerClientPort):
     def __init__(self, url: str, topic_exchange_name: str, logger: Optional[Logger] = None):
         self._url = url
-        self.topic_exchange_name: str = topic_exchange_name
+        self._topic_exchange_name: str = topic_exchange_name
 
         if logger is None:
             self._logger = getLogger(__name__)
@@ -28,7 +31,7 @@ class RabbitClient(RabbitClientPort):
             if self.connection:
                 return
             
-            if (not self.topic_exchange_name):
+            if (not self._topic_exchange_name):
                 raise RuntimeError("topic_exchange_name missing")
 
             self._logger.info("Connecting to RabbitMQ...")
@@ -37,6 +40,10 @@ class RabbitClient(RabbitClientPort):
 
             self.channel = await self.connection.channel()
             await self.channel.set_qos(prefetch_count=10)
+
+            self._topic_exchange = await self.create_topic_exchange(
+                name=self._topic_exchange_name
+            )
 
             self._logger.info("Connected to RabbitMQ")
         except Exception as e:
@@ -127,9 +134,9 @@ class RabbitClient(RabbitClientPort):
         self,
         *,
         queue: AbstractQueue,
+        routing_key: str,
         exchange_name: str | None = None,
-        exchange: AbstractExchange | None = None,
-        routing_key: str
+        exchange: AbstractExchange | None = None
     ):
         if self.channel is None:
             raise ConnectionError("RabbitBroker is not connected. Call connect() first.")

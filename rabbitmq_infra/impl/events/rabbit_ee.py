@@ -1,19 +1,21 @@
+from __future__ import annotations
+
 import json
 import asyncio
 from asyncio import Task
 from logging import Logger, getLogger
-from aio_pika.abc import AbstractExchange, AbstractIncomingMessage
-from typing import Optional, Callable, Dict, Any, Awaitable
+from typing import TYPE_CHECKING, Optional, Any
+if TYPE_CHECKING:
+    from aio_pika.abc import AbstractExchange, AbstractIncomingMessage
+    from rabbitmq_infra.types import EventHandler
+    from ports.broker_client_port import BrokerClientPort
 
-from exceptions import ConsumeError
-from ports.rabbit_client_port import RabbitClientPort
-from ports.rabbit_ee_port import RabbitEEPort
-
-Handler = Callable[[Dict[str, Any]], Awaitable[None]]
+from rabbitmq_infra.exceptions import ConsumeError
+from rabbitmq_infra.ports.broker_ee_port import BrokerEEPort
 
 
-class RabbitEE(RabbitEEPort):
-    def __init__(self, broker: RabbitClientPort, logger: Optional[Logger] = None):
+class RabbitEE(BrokerEEPort):
+    def __init__(self, broker: BrokerClientPort, logger: Optional[Logger] = None):
         self._broker = broker
         
         if logger is None:
@@ -29,12 +31,12 @@ class RabbitEE(RabbitEEPort):
     async def stop(self):
         pass
 
-    # ============= ОСНОВНОЙ API =============
+    # ============= API =============
     
     def on(
         self, 
         event_pattern: str, 
-        handler: Handler
+        handler: EventHandler
     ) -> Task[None]:
         return asyncio.create_task(self._setup_subscription(event_pattern, handler))
 
@@ -51,10 +53,9 @@ class RabbitEE(RabbitEEPort):
             durable=durable
         ))
 
-    # ============= ВНУТРЕННЯЯ ЛОГИКА =============
+    # ============= internal =============
 
-    async def _setup_subscription(self, pattern: str, handler: Handler):
-        # Создаём временную очередь
+    async def _setup_subscription(self, pattern: str, handler: EventHandler):
         async def wrapper(message: AbstractIncomingMessage):
                 try:
                     payload = json.loads(message.body)

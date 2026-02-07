@@ -1,13 +1,18 @@
+from __future__ import annotations
+
 import json
 from logging import Logger, getLogger
-from aio_pika.abc import AbstractExchange, AbstractIncomingMessage
-from typing import Optional, Dict
-from ports.rabbit_client_port import RabbitClientPort
-from ports.rpc.server_port import RabbitRpcServerPort, Handler
+from typing import TYPE_CHECKING, Optional, Dict
+if TYPE_CHECKING:
+    from aio_pika.abc import AbstractExchange, AbstractIncomingMessage
+    from rabbitmq_infra.ports.broker_client_port import BrokerClientPort
+    from rabbitmq_infra.types import RpcHandler
+
+from rabbitmq_infra.ports.rpc.server_port import BrokerRpcServerPort
 
 
-class RabbitRpcServer(RabbitRpcServerPort):
-    def __init__(self, broker: RabbitClientPort, logger: Optional[Logger] = None):
+class RabbitRpcServer(BrokerRpcServerPort):
+    def __init__(self, broker: BrokerClientPort, logger: Optional[Logger] = None):
         self._broker = broker
         
         if logger is None:
@@ -16,7 +21,7 @@ class RabbitRpcServer(RabbitRpcServerPort):
             self._logger = logger
 
         self._topic_exchange: Optional[AbstractExchange] = None
-        self.handlers: Dict[str, Handler] = {}  # "service.method" -> handler
+        self.handlers: Dict[str, RpcHandler] = {}  # "service.method" -> handler
 
     async def start(self):
         self._topic_exchange = self._broker.topic_exchange
@@ -29,7 +34,7 @@ class RabbitRpcServer(RabbitRpcServerPort):
         *,
         service_name: str,
         method: str,
-        handler: Handler
+        handler: RpcHandler
     ):
         key = f"{service_name}.{method}"
         if key in self.handlers:
@@ -47,7 +52,7 @@ class RabbitRpcServer(RabbitRpcServerPort):
 
         await queue.consume(self._create_handler_wrapper(handler))
     
-    def _create_handler_wrapper(self, handler: Handler):
+    def _create_handler_wrapper(self, handler: RpcHandler):
         async def wrapper(message: AbstractIncomingMessage):
             try:
                 payload = json.loads(message.body)

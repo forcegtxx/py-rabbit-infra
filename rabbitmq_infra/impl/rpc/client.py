@@ -1,18 +1,22 @@
+from __future__ import annotations
+
 import uuid
 import asyncio
 import json
 from logging import Logger, getLogger
-from aio_pika.abc import AbstractExchange, AbstractIncomingMessage, AbstractQueue
-from asyncio import Future
-from typing import Optional, Dict, Any
+from typing import TYPE_CHECKING, Optional, Dict, Any 
+if TYPE_CHECKING:
+    from asyncio import Future
+    from aio_pika.abc import AbstractExchange, AbstractIncomingMessage, AbstractQueue
+    from ports.broker_client_port import BrokerClientPort
+    from ports.broker_client_port import BrokerClientPort
 
-from exceptions import RpcTimeoutError
-from ports.rpc.client_port import RabbitRpcClientPort
-from ports.rabbit_client_port import RabbitClientPort
+from ...exceptions import RpcTimeoutError
+from ...ports.rpc.client_port import BrokerRpcClientPort
 
 
-class RabbitRpcClient(RabbitRpcClientPort):
-    def __init__(self, broker: RabbitClientPort, logger: Optional[Logger] = None):
+class RabbitRpcClient(BrokerRpcClientPort):
+    def __init__(self, broker: BrokerClientPort, logger: Optional[Logger] = None):
         self._broker = broker
         
         if logger is None:
@@ -96,5 +100,5 @@ class RabbitRpcClient(RabbitRpcClientPort):
             raise RpcTimeoutError(f"RPC timeout for method {method} on {service_name}")
         except Exception as e:
             self._pending.pop(corr_id, None)
-            self._logger.error(f"RPC ошибка {service_name}.{method}: {e}")
+            self._logger.error(f"RPC error {service_name}.{method}: {e}")
             raise RuntimeError(f"RPC error: {e}") from e

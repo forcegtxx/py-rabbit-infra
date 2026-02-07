@@ -1,16 +1,16 @@
-from typing import Dict, Any, Protocol
-from aio_pika.abc import AbstractQueue, AbstractExchange
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Protocol
+if TYPE_CHECKING:
+    from aio_pika.abc import AbstractQueue, AbstractExchange
+    from rabbitmq_infra.types import Payload
 
 
-class RabbitClientPort(Protocol):
-    """Порт для брокера сообщений (RabbitMQ, Kafka, ...)."""
-
+class BrokerClientPort(Protocol):
     async def connect(self) -> None:
-        """Подключиться к брокеру."""
         ...
 
     async def close(self) -> None:
-        """Закрыть соединение."""
         ...
 
     # ============= Queue =============
@@ -91,7 +91,7 @@ class RabbitClientPort(Protocol):
         exchange_name: str = "",
         exchange: AbstractExchange | None = None,
         routing_key: str,
-        payload: Dict[str, Any],
+        payload: Payload,
         durable: bool = False,
         correlation_id: str | None = None,
         reply_to: str | None = None
@@ -100,5 +100,4 @@ class RabbitClientPort(Protocol):
 
     @property
     def topic_exchange(self) -> AbstractExchange:
-        """Топиковый exchange."""
         ...

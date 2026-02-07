@@ -1,9 +1,11 @@
-from typing import Awaitable, Dict, Any, Protocol, Callable
+from __future__ import annotations
 
-Handler = Callable[[Dict[str, Any]], Awaitable[Dict[str, Any]]]
+from typing import TYPE_CHECKING, Protocol
+if TYPE_CHECKING:
+    from rabbitmq_infra.types import RpcHandler
 
 
-class RabbitRpcServerPort(Protocol):
+class BrokerRpcServerPort(Protocol):
     async def start(self) -> None:
         ...
 
@@ -15,6 +17,6 @@ class RabbitRpcServerPort(Protocol):
         *,
         service_name: str,
         method: str,
-        handler: Handler
+        handler: RpcHandler
     ) -> None:
         ...
