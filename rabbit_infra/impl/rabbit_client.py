@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import time
 import json
-from logging import Logger, getLogger
+from logging import Logger
 from aio_pika import connect_robust, Message, DeliveryMode, ExchangeType
 from typing import TYPE_CHECKING, Optional, Dict, Any
 if TYPE_CHECKING:
     from aio_pika.abc import AbstractQueue, AbstractExchange, AbstractRobustConnection, AbstractChannel
 
+from rabbit_infra.logging import get_class_logger
 from rabbit_infra.ports.broker_client_port import BrokerClientPort
 from rabbit_infra.exceptions import ConnectionError
 
@@ -18,9 +19,9 @@ class RabbitClient(BrokerClientPort):
         self._topic_exchange_name: str = topic_exchange_name
 
         if logger is None:
-            self._logger = getLogger(__name__)
+            self._logger = get_class_logger(self)
         else:
-            self._logger = logger
+            self._logger = logger.getChild(self.__class__.__name__)
 
         self._topic_exchange: Optional[AbstractExchange] = None
         self.connection: Optional[AbstractRobustConnection] = None
