@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Optional, Dict, Any
 if TYPE_CHECKING:
     from aio_pika.abc import AbstractQueue, AbstractExchange, AbstractRobustConnection, AbstractChannel
 
-from rabbit_infra.logging import get_class_logger
+from rabbit_infra.logging import get_logger
 from rabbit_infra.ports.broker_client_port import BrokerClientPort
 from rabbit_infra.exceptions import ConnectionError
 
@@ -19,7 +19,7 @@ class RabbitClient(BrokerClientPort):
         self._topic_exchange_name: str = topic_exchange_name
 
         if logger is None:
-            self._logger = get_class_logger(self)
+            self._logger = get_logger(self.__class__.__name__)
         else:
             self._logger = logger.getChild(self.__class__.__name__)
 
