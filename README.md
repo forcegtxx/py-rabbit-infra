@@ -27,28 +27,6 @@ pip install async-rabbitmq-client
 
 ---
 
-# 🧱 Архитектурная структура
-
-Проект следует схеме Hex Architecture:
-
-```
-mybroker/
-    ports/              # Контракты (protocols)
-        message_broker_port.py
-        consumer_port.py
-
-    adapters/           # Реализации портов
-        rabbitmq/
-            rabbit_broker.py
-            rabbit_consumer.py
-
-    application/        # Сервисы, работающие через порты
-        publisher_service.py
-        consumer_service.py
-
-    models/             # value-objects, DTO, события и пр.
-```
-
 ## ⭐ Принцип
 
 - **Порт** = контракт (Protocol)  
@@ -102,20 +80,6 @@ await broker.publish(
 )
 ```
 
-## Инъекция зависимостей
-
-Твой код зависит только от порта:
-
-```python
-class PaymentService:
-    def __init__(self, broker: MessageBrokerPort):
-        self._broker = broker
-```
-
-Теперь можно подменять реализацию в тестах или на другой брокер.
-
----
-
 # 🔄 Подписка и консьюмеры
 
 Адаптеры RabbitMQ предоставляют удобный API:
@@ -127,47 +91,3 @@ await consumer.consume("events", handler=handle_event)
 
 ---
 
-# 🧪 Тестирование
-
-Порты позволяют легко тестировать приложение, подменяя реализацию:
-
-```python
-class FakeBroker(MessageBrokerPort):
-    async def publish(self, routing_key: str, payload: dict):
-        self.sent = (routing_key, payload)
-```
-
-Полная изоляция от инфраструктуры — то, что и нужно.
-
----
-
-# 🧭 Почему именно Hex Architecture?
-
-- Никакой зависимости домена от инфраструктуры
-- Взаимозаменяемые адаптеры
-- Возможность добавить поддержку Kafka/SQS, не меняя API
-- Мощная типизация и предсказуемость
-- Простое тестирование
-
----
-
-# 👨‍💻 Roadmap
-
-- [ ] Поддержка retry/backoff
-- [ ] Middleware на порт
-- [ ] Многопоточное потребление
-- [ ] Инструменты мониторинга
-- [ ] Пулы каналов/коннекшенов
-
----
-
-# 📄 Лицензия
-
-MIT (или своя).
-
----
-
-# 🌟 Обратная связь
-
-Если хочешь развить библиотеку дальше — открывай issue или PR!  
-Или просто напиши автору — идеи приветствуются.
